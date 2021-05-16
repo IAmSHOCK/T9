@@ -6,7 +6,7 @@
 
 int codigo(char c){
     c = tolower(c);
-    switch (c)
+    switch (c) 
     {
         case 'a': case 'b': case 'c': case 'â': case 'ã': case 'á': case 'à': return 2;
         case 'd': case 'e': case 'f': case 'é': return 3;
