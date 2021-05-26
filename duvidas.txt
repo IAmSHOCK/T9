@@ -1,0 +1,8 @@
+gcc -o main main.c gtk.c gtk.h Hash.h Hash.c `pkg-config --libs --cflags gtk+-3.0`
+
+
+gtk programa a parte ou tudo junto
+
+quando executamos na main, nunca chega a linha 32
+
+como vamos buscar os valores intrudozidos no gtk
