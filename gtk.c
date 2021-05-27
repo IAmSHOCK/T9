@@ -1,39 +1,102 @@
-
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <stdio.h>
-#include "gtk.h"
 #include <gtk/gtk.h>
+#include "Hash.h"
+
+#define MAXSIZE 256
+#define M 65536
+#define ONOFF 12
+#define SPACE 11
+#define CYCLE 10
+#define ON 1
+#define OFF 0
 
 GtkWidget *window;
 GtkWidget *grid;
 GtkWidget *button[13];
-
 GtkWidget *console;
-GtkWidget *vbox;
-GtkWidget *console_button;
 
+int dicionario;
+link l;
+link root;
 long long unsigned int t9_result;
 
-void button_clicked(GtkWidget *widget, gpointer data) {
-    int *id = data;
-    if(*id == 11){
-        t9_result = 0;
-    }
-    else{
+void set_label_empty(){
+    gtk_label_set_text((GtkLabel *) console, " ");
+}
 
+void set_label(tipoObjeto *obj){
+    if(obj != NULL)
+        gtk_label_set_text((GtkLabel *) console, obj->valor);
+}
+
+void button_clicked(GtkWidget *widget, gpointer data)
+{
+
+    int *id = data;
+
+    switch (*id)
+    {
+    case SPACE:
+        l = NULL;
+        root = NULL;
+        t9_result = 0;
+        set_label_empty();
+        break;
+
+    case CYCLE:
+        l = (l->next == NULL) ? root : l->next;
+        if (l->obj != NULL)
+            set_label(l->obj);
+        break;
+
+    case ONOFF:
+        dicionario = 0;
+        break;  
+
+    default:
         t9_result *= 10;
         t9_result += *id;
+        l = get_link(t9_result);
+        root = l;
+        if (l != NULL && l->obj != NULL)
+            set_label(l->obj);
+    }    
+}
+
+int main(int argc, char *argv[]) {
+    //carregar dicionario
+    FILE *f = fopen("lusiadas.txt", "r");
+    STinit();
+    char *str = (char *)malloc(MAXSIZE * sizeof(char));
+    while (fgets(str, MAXSIZE, f) != NULL)
+    {
+        if (isdigit(str[0]))
+        {
+            continue;
+        }
+        str[strlen(str) - 1] = '\0';
+        char *token;
+        token = strtok(str, " ");
+        while (token != NULL)
+        {
+            //puts(token);
+            if (ispunct(token[strlen(token) - 1]))
+                token[strlen(token) - 1] = '\0';
+            tipoObjeto *tmp = STsearch(token);
+            STinsert(tmp);
+            token = strtok(NULL, " ");
+        }
     }
-    
-    g_print("%llu\n", t9_result);
-}
 
-long long unsigned int get_t9(){
-    return t9_result;
-}
+    addPunct();
+    //fim do carregamento
 
-void gtk_inciar(int argc, char *argv[]) {
-    
+    //gtk
     t9_result = 0;
+    dicionario = ON;
 
     gchar *values[12] = {"1", "2 abc", "3 def", "4 ghi",
         "5 jkl", "6 mno","7 pqrs",
@@ -70,15 +133,14 @@ void gtk_inciar(int argc, char *argv[]) {
     g_signal_connect(G_OBJECT(window), "destroy",G_CALLBACK(gtk_main_quit), NULL);
     
     //consola 
-    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
-    console = gtk_label_new("Teste");
+    console = gtk_label_new("");
     gtk_grid_attach(GTK_GRID(grid), console, 0, 0, 50, 40);    
-    //
 
     gtk_container_add(GTK_CONTAINER(window), grid);
     gtk_widget_show_all(window);
     gtk_main();
 
+    return 0;
 }
 
 

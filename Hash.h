@@ -21,6 +21,6 @@ tipoObjeto* STsearch(char *v);
 void imprimir(long long unsigned int h);
 void insert (link l, tipoObjeto *obj);
 void elimina (link l, tipoObjeto *o);
-void addPunct();
+link get_link(long long unsigned int h);
 
 #endif // HASH_H_INCLUDED
