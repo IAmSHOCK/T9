@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
     g_signal_connect(G_OBJECT(window), "destroy",G_CALLBACK(gtk_main_quit), NULL);
     
     //consola 
-    console = gtk_label_new("");
+    console = gtk_label_new(""); 
     gtk_grid_attach(GTK_GRID(grid), console, 0, 0, 50, 40);    
 
     gtk_container_add(GTK_CONTAINER(window), grid);
