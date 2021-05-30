@@ -22,5 +22,5 @@ void imprimir(long long unsigned int h);
 void insert (link l, tipoObjeto *obj);
 void elimina (link l, tipoObjeto *o);
 link get_link(long long unsigned int h);
-
+void addPunct();
 #endif // HASH_H_INCLUDED
