@@ -7,7 +7,7 @@
 #define M 65536
 #define MAXSIZE 256
 
-link tab[M];
+list tab[M];
 
 tipoObjeto *criar(char *v, int occur)
 {
@@ -19,10 +19,10 @@ tipoObjeto *criar(char *v, int occur)
   return obj;
 }
 
-link create()
+list create()
 {
-  link aux;
-  aux = (link)malloc(sizeof(_STnode));
+  list aux;
+  aux = (list)malloc(sizeof(_STnode));
   if (aux != NULL)
   {
     aux->obj = NULL;
@@ -31,7 +31,7 @@ link create()
   return aux;
 }
 
-void procura_link(link l, tipoObjeto *obj, link *ant, link *atual)
+void procura_link(list l, tipoObjeto *obj, list *ant, list *atual)
 {
   *ant = l;
   *atual = l->next;
@@ -48,11 +48,11 @@ void procura_link(link l, tipoObjeto *obj, link *ant, link *atual)
   }
 }
 
-void insert(link l, tipoObjeto *o)
+void insert(list l, tipoObjeto *o)
 {
-  link no;
-  link ant, atual;
-  no = (link)malloc(sizeof(_STnode));
+  list no;
+  list ant, atual;
+  no = (list)malloc(sizeof(_STnode));
   if (no != NULL)
   {
     no->obj = o;
@@ -62,7 +62,7 @@ void insert(link l, tipoObjeto *o)
   }
 }
 
-void procura_elimina(link l, tipoObjeto *obj, link *ant, link *atual)
+void procura_elimina(list l, tipoObjeto *obj, list *ant, list *atual)
 {
   *ant = l;
   *atual = l->next;
@@ -79,10 +79,10 @@ void procura_elimina(link l, tipoObjeto *obj, link *ant, link *atual)
   }
 }
 
-void elimina(link l, tipoObjeto *o)
+void elimina(list l, tipoObjeto *o)
 {
-  link ant1;
-  link atual1;
+  list ant1;
+  list atual1;
   procura_elimina(l, o, &ant1, &atual1);
   if (atual1 != NULL)
   {
@@ -250,7 +250,7 @@ void STinsert(tipoObjeto *obj)
 {
   char *v = obj->valor;
   int h = hash(v);
-  link t;
+  list t;
   for (t = tab[h]->next; t != NULL; t = t->next)
     if (strcmp(t->obj->valor, v) == 0)
       break;
@@ -270,7 +270,7 @@ void STinsert(tipoObjeto *obj)
 
 tipoObjeto *STsearch(char *v)
 {
-  link t;
+  list t;
   int h = hash(v);
   for (t = tab[h]->next; t != NULL; t = t->next)
   {
@@ -299,7 +299,7 @@ void imprimir(long long unsigned int h)
     hashtmp = clean(hashtmp);
   //printf("%llu\n",hashtmp);
   hashtmp = hashtmp % M;
-  link t;
+  list t;
   int continuar = 0;
   for (t = tab[hashtmp]->next; t != NULL; t = t->next)
   {
@@ -315,7 +315,7 @@ void imprimir(long long unsigned int h)
   }
 }
 
-link get_link(long long unsigned int h)
+list get_link(long long unsigned int h)
 {
   if (h > 1000000)
     h = clean(h);

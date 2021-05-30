@@ -20,21 +20,24 @@ GtkWidget *button[13];
 GtkWidget *console;
 GDateTime *LastPressed = NULL;
 
-unsigned char button_str[8][30] = { "abcàáãâçABCÀÁÃÂÇ", "defèéêDEFÈÉÊ", "ghiìíGHIÌÍ", 
-"jklJKL", "mnoòóõôMNOÒÓÕÔ", 
-"pqrsPQRS", "tuvùúTUVÙÚ", "wxyzWXYZ" 
+unsigned char button_str[8][30] = { "abcàáãâçABCÀÁÃÂÇ", "defèéêDEFÈÉÊ", "ghiìíGHIÌÍ",
+"jklJKL", "mnoòóõôMNOÒÓÕÔ",
+"pqrsPQRS", "tuvùúTUVÙÚ", "wxyzWXYZ"
 };
 unsigned char caption[30]="";
 int str_pos = 0;
 int cap_pos = 0;
 
 int dicionario;
-link l;
-link root;
+list l;
+list root;
 long long unsigned int t9_result;
 int used_key;
 
 char *word;
+
+char *dicio;
+tipoObjeto *obj;
 
 void set_label_empty(){
     gtk_label_set_text((GtkLabel *) console, " ");
@@ -46,12 +49,13 @@ if (l != NULL && l->obj != NULL)
 void set_label(){
     l = get_link(t9_result);
     root = l;
-    if (l != NULL && l->obj != NULL)
+    if (l != NULL && l->obj != NULL){
         gtk_label_set_text((GtkLabel *) console, l->obj->valor);
+        dicio=l->obj->valor;
+    }
 }
 
 void use_keyboard(int key){
-    g_print("%s\n", caption);
     key -= 2;
     if(key != used_key){
         str_pos = 0;
@@ -83,13 +87,14 @@ void use_keyboard(int key){
         }
     else caption[cap_pos] = button_str[key][str_pos];
     LastPressed = g_date_time_new_now_local();
+    dicio=caption;
     gtk_label_set_text((GtkLabel *) console, caption);
 }
 
 void button_clicked(GtkWidget *widget, gpointer data)
 {
     int *id = data;
-    
+
     if(dicionario){
 
         switch (*id)
@@ -98,13 +103,15 @@ void button_clicked(GtkWidget *widget, gpointer data)
                 if(t9_result < 10){
                     t9_result = 0;
                     set_label_empty();
-                } 
+                }
                 else{
                     t9_result /= 10;
                     set_label();
-                } 
+                }
                 break;
             case CLEAR:
+                obj = STsearch(dicio);
+                STinsert(obj);
                 l = NULL;
                 root = NULL;
                 t9_result = 0;
@@ -117,8 +124,8 @@ void button_clicked(GtkWidget *widget, gpointer data)
                 break;
 
             case ONOFF:
-                dicionario = (T9_ON) ? T9_OFF : T9_ON;
-                break;  
+                dicionario = (dicionario) ? T9_OFF : T9_ON;
+                break;
 
             default:
                 t9_result *= 10;
@@ -127,7 +134,7 @@ void button_clicked(GtkWidget *widget, gpointer data)
                 root = l;
                 if (l != NULL && l->obj != NULL)
                     set_label(l->obj);
-        }  
+        }
 
     }
 
@@ -135,17 +142,18 @@ void button_clicked(GtkWidget *widget, gpointer data)
         switch (*id)
         {
             case DEL:
-                if(strlen(word) > 0)
-                    *(word + strlen(word) - 1) = '\0';
+                //falta isto
                 break;
             case CLEAR:
+                obj = STsearch(dicio);
+                STinsert(obj);
                 cap_pos = 0;
                 LastPressed = NULL;
                 for (int i = 0; i < 30; i++)
                 {
                     caption[i] = '\0';
                 }
-                
+
                 set_label_empty();
                 break;
 
@@ -153,14 +161,14 @@ void button_clicked(GtkWidget *widget, gpointer data)
                 break;
 
             case ONOFF:
-                dicionario = (T9_ON) ? T9_OFF : T9_ON;
-                break;  
+                dicionario = (dicionario) ? T9_OFF : T9_ON;
+                break;
 
             default:
                 use_keyboard(*id);
                 used_key = *id - 2;
-        }  
-    } 
+        }
+    }
 }
 
 int main(int argc, char *argv[]) {
@@ -199,7 +207,7 @@ int main(int argc, char *argv[]) {
         "5 jkl", "6 mno","7 pqrs",
         "8 tuv", "9 wxyz", "CYCLE", "CLEAR", "ON/OFF"
     };
-     
+
     gtk_init(&argc, &argv);
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
@@ -225,12 +233,12 @@ int main(int argc, char *argv[]) {
             tmp++;
         }
     }
-    
+
     g_signal_connect(G_OBJECT(window), "destroy",G_CALLBACK(gtk_main_quit), NULL);
-    
-    //consola 
-    console = gtk_label_new(""); 
-    gtk_grid_attach(GTK_GRID(grid), console, 0, 0, 50, 40);    
+
+    //consola
+    console = gtk_label_new("");
+    gtk_grid_attach(GTK_GRID(grid), console, 0, 0, 50, 40);
 
     gtk_container_add(GTK_CONTAINER(window), grid);
     gtk_widget_show_all(window);
@@ -238,7 +246,3 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
-
-
-

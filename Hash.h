@@ -6,21 +6,21 @@ typedef struct {
   char *valor;
 }tipoObjeto;
 
-typedef struct STnode* link;
+typedef struct STnode* list;
 typedef struct STnode {
   tipoObjeto *obj;
-  link next;
+  list next;
 }_STnode;
 
 tipoObjeto* criar (char *v, int oco);
-link create();
+list create();
 int hash(char *v);
 void STinit();
 void STinsert(tipoObjeto *obj);
 tipoObjeto* STsearch(char *v);
 void imprimir(long long unsigned int h);
-void insert (link l, tipoObjeto *obj);
-void elimina (link l, tipoObjeto *o);
-link get_link(long long unsigned int h);
+void insert (list l, tipoObjeto *obj);
+void elimina (list l, tipoObjeto *o);
+list get_link(long long unsigned int h);
 void addPunct();
 #endif // HASH_H_INCLUDED
