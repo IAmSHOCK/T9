@@ -177,6 +177,10 @@ int codigo2(char *c)
     return 6;
   else if (strcmp(c, "Ô") == 0)
     return 6;
+  else if (strcmp(c, "ú") == 0)
+    return 8;
+  else if (strcmp(c,"Ú") == 0)
+    return 8;
   else
     return -1;
 }
@@ -326,13 +330,13 @@ list get_link(long long unsigned int h)
 
 void addPunct()
 {
-  tipoObjeto *v = criar(",", 1);
-  tipoObjeto *p = criar(".", 1);
-  tipoObjeto *pv = criar(";", 1);
-  tipoObjeto *e = criar("!", 1);
-  tipoObjeto *i = criar("?", 1);
-  tipoObjeto *d = criar(":", 1);
-  tipoObjeto *ifen = criar("-", 1);
+  tipoObjeto *v = criar(",", 0);
+  tipoObjeto *p = criar(".", 0);
+  tipoObjeto *pv = criar(";", 0);
+  tipoObjeto *e = criar("!", 0);
+  tipoObjeto *i = criar("?", 0);
+  tipoObjeto *d = criar(":", 0);
+  tipoObjeto *ifen = criar("-", 0);
 
   STinsert(v);
   STinsert(p);
@@ -341,4 +345,23 @@ void addPunct()
   STinsert(i);
   STinsert(d);
   STinsert(ifen);
+}
+
+void copy(char str[], char *valor){
+  for(int i=0; i<=strlen(valor); i++){
+    str[i]=valor[i];
+  }
+}
+
+void ficheiro(){
+  FILE *f = fopen("dicionario.txt","w");
+  for(int i=0; i<M; i++){
+    list t;
+    char str[128];
+    for(t=tab[i]->next; t!=NULL; t=t->next){
+      copy(str,t->obj->valor);
+      fprintf(f, "%s %d\n", str, t->obj->ocorrencias);
+    }
+  }
+  fclose(f);
 }

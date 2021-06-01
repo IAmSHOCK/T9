@@ -171,32 +171,61 @@ void button_clicked(GtkWidget *widget, gpointer data)
     }
 }
 
-int main(int argc, char *argv[]) {
-    //carregar dicionario
-    FILE *f = fopen("lusiadas.txt", "r");
-    STinit();
-    char *str = (char *)malloc(MAXSIZE * sizeof(char));
-    while (fgets(str, MAXSIZE, f) != NULL)
-    {
-        if (isdigit(str[0]))
-        {
-            continue;
-        }
-        str[strlen(str) - 1] = '\0';
-        char *token;
-        token = strtok(str, " ");
-        while (token != NULL)
-        {
-            //puts(token);
-            if (ispunct(token[strlen(token) - 1]))
-                token[strlen(token) - 1] = '\0';
-            tipoObjeto *tmp = STsearch(token);
-            STinsert(tmp);
-            token = strtok(NULL, " ");
-        }
-    }
+void limpar(char *str){
+  for(int i=0; i<strlen(str); i++){
+    if(ispunct(str[i])) str[i]=' ';
+  }
+}
 
-    addPunct();
+int main(int argc, char *argv[]) {
+    FILE *dic = fopen("dicionario.txt","r");
+    if(dic!=NULL){
+      STinit();
+      char *str = (char *)malloc(MAXSIZE * sizeof(char));
+      while (fgets(str, MAXSIZE, dic) != NULL)
+      {
+          str[strlen(str) - 1] = '\0';
+          char *string = (char *)malloc(MAXSIZE * sizeof(char));
+
+          char *token;
+          token = strtok(str, " ");
+          strcpy(string,token);
+          token = strtok(NULL, " ");
+          int freq = atoi(token);
+
+          tipoObjeto *tmp = STsearch(string);
+          for(int i=0; i<freq; i++){
+            STinsert(tmp);
+          }
+      }
+      fclose(dic);
+    }
+    else{
+      //carregar dicionario
+      FILE *f = fopen("lusiadas.txt", "r");
+      STinit();
+      char *str = (char *)malloc(MAXSIZE * sizeof(char));
+      while (fgets(str, MAXSIZE, f) != NULL)
+      {
+          if (isdigit(str[0]))
+          {
+              continue;
+          }
+          str[strlen(str) - 1] = '\0';
+          limpar(str);
+          char *token;
+          token = strtok(str, " ");
+          while (token != NULL)
+          {
+              //puts(token);
+              tipoObjeto *tmp = STsearch(token);
+              STinsert(tmp);
+              token = strtok(NULL, " ");
+          }
+      }
+      fclose(f);
+      addPunct();
+    }
     //fim do carregamento
 
     //gtk
@@ -243,6 +272,6 @@ int main(int argc, char *argv[]) {
     gtk_container_add(GTK_CONTAINER(window), grid);
     gtk_widget_show_all(window);
     gtk_main();
-
+    ficheiro();
     return 0;
 }
