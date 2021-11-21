@@ -1,2 +1,2 @@
 # T9
-T9 keyboard where the dictionary is Lusidas by Luís de Camôes
+T9 keyboard where the dictionary is Lusíadas by Luís de Camôes
