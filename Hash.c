@@ -296,29 +296,6 @@ long long unsigned int clean(long long unsigned int hash)
   return r;
 }
 
-void imprimir(long long unsigned int h)
-{
-  long long unsigned int hashtmp = h;
-  if (hashtmp > 1000000)
-    hashtmp = clean(hashtmp);
-  //printf("%llu\n",hashtmp);
-  hashtmp = hashtmp % M;
-  list t;
-  int continuar = 0;
-  for (t = tab[hashtmp]->next; t != NULL; t = t->next)
-  {
-    if (continuar == 0)
-    {
-      printf("%s %d\n", t->obj->valor, t->obj->ocorrencias);
-    }
-    else
-    {
-      break;
-    }
-    scanf("%d", &continuar);
-  }
-}
-
 list get_link(long long unsigned int h)
 {
   if (h > 1000000)
@@ -337,6 +314,7 @@ void addPunct()
   tipoObjeto *i = criar("?", 0);
   tipoObjeto *d = criar(":", 0);
   tipoObjeto *ifen = criar("-", 0);
+  tipoObjeto *aspas = criar("\"", 0);
 
   STinsert(v);
   STinsert(p);
@@ -345,6 +323,7 @@ void addPunct()
   STinsert(i);
   STinsert(d);
   STinsert(ifen);
+  STinsert(aspas);
 }
 
 void copy(char str[], char *valor){

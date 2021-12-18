@@ -10,7 +10,6 @@
 #define ONOFF 12
 #define CLEAR 11
 #define CYCLE 10
-#define DEL 1
 #define T9_ON 1
 #define T9_OFF 0
 
@@ -20,7 +19,7 @@ GtkWidget *button[13];
 GtkWidget *console;
 GDateTime *LastPressed = NULL;
 
-unsigned char button_str[8][30] = { "abcàáãâçABCÀÁÃÂÇ", "defèéêDEFÈÉÊ", "ghiìíGHIÌÍ",
+unsigned char button_str[9][30] = {".,:;-_?!\"" ,"abcàáãâçABCÀÁÃÂÇ", "defèéêDEFÈÉÊ", "ghiìíGHIÌÍ",
 "jklJKL", "mnoòóõôMNOÒÓÕÔ",
 "pqrsPQRS", "tuvùúTUVÙÚ", "wxyzWXYZ"
 };
@@ -56,7 +55,7 @@ void set_label(){
 }
 
 void use_keyboard(int key){
-    key -= 2;
+    key -= 1;
     if(key != used_key){
         str_pos = 0;
     }
@@ -99,16 +98,6 @@ void button_clicked(GtkWidget *widget, gpointer data)
 
         switch (*id)
         {
-            case DEL:
-                if(t9_result < 10){
-                    t9_result = 0;
-                    set_label_empty();
-                }
-                else{
-                    t9_result /= 10;
-                    set_label();
-                }
-                break;
             case CLEAR:
                 obj = STsearch(dicio);
                 STinsert(obj);
@@ -119,6 +108,7 @@ void button_clicked(GtkWidget *widget, gpointer data)
                 break;
 
             case CYCLE:
+                if(l==NULL) break;
                 l = (l->next == NULL) ? root : l->next;
                 set_label_cycle();
                 break;
@@ -141,9 +131,6 @@ void button_clicked(GtkWidget *widget, gpointer data)
     else{
         switch (*id)
         {
-            case DEL:
-                //falta isto
-                break;
             case CLEAR:
                 obj = STsearch(dicio);
                 STinsert(obj);
@@ -166,15 +153,9 @@ void button_clicked(GtkWidget *widget, gpointer data)
 
             default:
                 use_keyboard(*id);
-                used_key = *id - 2;
+                used_key = *id - 1;
         }
     }
-}
-
-void limpar(char *str){
-  for(int i=0; i<strlen(str); i++){
-    if(ispunct(str[i])) str[i]=' ';
-  }
 }
 
 int main(int argc, char *argv[]) {
@@ -212,11 +193,11 @@ int main(int argc, char *argv[]) {
               continue;
           }
           str[strlen(str) - 1] = '\0';
-          limpar(str);
           char *token;
           token = strtok(str, " ");
           while (token != NULL)
           {
+              if(ispunct(token[strlen(token)-1])) token[strlen(token)-1]='\0';
               //puts(token);
               tipoObjeto *tmp = STsearch(token);
               STinsert(tmp);
@@ -232,9 +213,9 @@ int main(int argc, char *argv[]) {
     t9_result = 0;
     dicionario = T9_ON;
 
-    gchar *values[12] = {"DEL", "2 abc", "3 def", "4 ghi",
+    gchar *values[12] = {"1 ", "2 abc", "3 def", "4 ghi",
         "5 jkl", "6 mno","7 pqrs",
-        "8 tuv", "9 wxyz", "CYCLE", "CLEAR", "ON/OFF"
+        "8 tuv", "9 wxyz", "CYCLE", "*", "ON/OFF"
     };
 
     gtk_init(&argc, &argv);
